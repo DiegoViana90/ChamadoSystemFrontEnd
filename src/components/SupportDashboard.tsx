@@ -6,9 +6,11 @@ const SupportDashboard: React.FC = () => {
 
     useEffect(() => {
         const fetchTickets = async () => {
-            const response = await api.get('/tickets');
+            const user = JSON.parse(localStorage.getItem('user')!);
+            const response = await api.get(`/tickets?userId=${user.id}`);
             setTickets(response.data);
         };
+
 
         fetchTickets();
     }, []);
@@ -16,7 +18,6 @@ const SupportDashboard: React.FC = () => {
     const handleUpdateTicket = async (ticketId: number, isClosed: boolean) => {
         const user = JSON.parse(localStorage.getItem('user')!);
         await api.put(`/tickets/${ticketId}`, { isClosed, userId: user.id });
-        // Refresh ticket list
         const response = await api.get('/tickets');
         setTickets(response.data);
     };
