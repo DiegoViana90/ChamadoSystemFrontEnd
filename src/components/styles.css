@@ -1,14 +1,22 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
+    height: 100vh; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #020212;
 }
 
 .container {
     display: flex;
-    justify-content: center;
+    flex-direction: column; 
     align-items: center;
-    height: 100vh;
+    justify-content: center;
     background-color: #020212;
+    padding: 20px; 
+    border-radius: 10px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
 .card {
@@ -18,7 +26,6 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
-    margin: auto;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -50,17 +57,26 @@ input,
 
 .button-login:hover {
     background-color: #00b336;
+    color: #ffffff;
+}
+
+.login-logo {
+    width: 80%; 
+    max-width: 300px;
+    display: block;
+    margin: auto;
+    margin-bottom: 20px;
 }
 
 .user-dashboard {
     background: #fff;
-    padding: 20px;
+    padding: 40px; 
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 80%;
-    max-width: 1200px;
+    width: 100%; 
+    max-width: 1500px; 
     box-sizing: border-box;
-    margin-top: 20px; /* Adicionei margem no topo para separar do container pai */
+    margin-top: 20px; 
 }
 
 .user-dashboard h1 {
@@ -70,18 +86,19 @@ input,
 
 .user-dashboard .input-container {
     display: flex;
-    flex-direction: column; /* Alterei para column para colocar o input acima do textarea */
-    margin-bottom: 10px;
+    flex-direction: column; 
+    margin-bottom: 20px; 
 }
+
 .user-dashboard .input-title,
 .user-dashboard .textarea-description {
-    width: calc(50% - 10px); /* Ajuste para ocupar 50% do espaço disponível com margem entre eles */
-    padding: 10px;
+    width: calc(70% - 20px); 
+    padding: 15px; 
     border-radius: 5px;
     border: 1px solid #000;
     box-sizing: border-box;
-    margin: 5px;
-    margin-bottom: 10px;
+    margin: 10px auto; 
+    margin-bottom: 20px;
 }
 
 .user-dashboard .input-container {
@@ -93,13 +110,13 @@ input,
 
 .user-dashboard .textarea-description {
     resize: vertical;
-    height: 150px; 
+    height: 200px; 
 }
 
 .user-dashboard .button-create-ticket {
-    width: 20%; 
-    padding: 10px;
-    margin: 10px auto;
+    width: 50%; 
+    padding: 15px; 
+    margin: 20px auto; 
     border-radius: 5px;
     border: none;
     background-color: #007bff;
@@ -111,8 +128,8 @@ input,
 
 .user-dashboard .button-create-ticket:hover {
     background-color: #00b336;
+    color: #ffffff;
 }
-
 
 .user-dashboard table {
     width: 100%;
@@ -122,7 +139,7 @@ input,
 
 .user-dashboard th,
 .user-dashboard td {
-    padding: 10px;
+    padding: 15px; /* Aumentei o padding */
     border: 1px solid #ccc;
     text-align: left;
 }
@@ -236,18 +253,9 @@ input,
     vertical-align: middle; 
 }
 
-
 .empty-fields-alert {
     text-align: center;
     color: #ff0101; 
     margin-top: 10px;
     font-weight: bold;
-}
-
-.login-logo {
-    width: 80%; /* Ajuste conforme necessário */
-    max-width: 300px; /* Ajuste conforme necessário */
-    display: block;
-    margin: auto;
-    margin-bottom: 20px;
 }
