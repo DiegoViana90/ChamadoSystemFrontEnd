@@ -39,9 +39,7 @@ const Login: React.FC = () => {
 
     return (
         <div className="container">
-            {/* Exibindo a imagem acima do card */}
             <img src={logoImage} alt="Logo" className="login-logo" />
-
             <div className="card">
                 <h2>Login Suporte</h2>
                 <form onSubmit={handleLogin}>
@@ -71,4 +69,3 @@ const Login: React.FC = () => {
 };
 
 export default Login;
-

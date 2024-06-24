@@ -146,7 +146,7 @@ const UserDashboard: React.FC = () => {
                                     {ticket.description.length > 100
                                         ? (
                                             <>
-                                                {`${ticket.description.substring(0, 80)}...`}
+                                                {`${ticket.description.substring(0, 60)}...`}
                                                 <div className="description-tooltip">
                                                     {ticket.description}
                                                 </div>
