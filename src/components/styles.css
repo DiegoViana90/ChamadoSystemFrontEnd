@@ -1,0 +1,140 @@
+/* src/styles.css */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #020212;
+}
+
+.card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+h2 {
+    color: #000000;
+    text-align: center;
+}
+
+input,
+.button-login {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #000000;
+    box-sizing: border-box;
+}
+
+.button-login {
+    background-color: #ffff00;
+    color: #020212;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.button-login:hover {
+    background-color: #00b336;
+}
+
+/* styles.css */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0; /* Cor de fundo geral */
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.user-dashboard {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 80%; /* Largura ajustada para 80% da largura do container */
+    max-width: 1200px; /* Largura máxima para evitar que o card fique muito largo */
+    box-sizing: border-box;
+}
+
+.user-dashboard h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.user-dashboard .input-title {
+    width: calc(50% - 5px); 
+    padding: 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    border: 1px solid #000;
+    box-sizing: border-box;
+}
+
+.user-dashboard .textarea-description {
+    width: calc(50% - 5px); 
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #000;
+    box-sizing: border-box;
+}
+
+.user-dashboard .button-create-ticket {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #ffcc00;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.user-dashboard .button-create-ticket:hover {
+    background-color: #ffa500;
+}
+
+.user-dashboard table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.user-dashboard th, .user-dashboard td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.user-dashboard th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+    text-align: center;
+}
+
+.user-dashboard tbody tr:nth-child(even) {
+    background-color: #f9f9f9; 
+}

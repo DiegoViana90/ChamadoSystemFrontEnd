@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import './styles.css'; // Import your CSS file
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -12,6 +13,7 @@ const Login: React.FC = () => {
 
         try {
             const response = await api.post('/auth/login', { email, password });
+            console.log(response);
             const { token, user } = response.data;
 
             localStorage.setItem('token', token);
@@ -29,11 +31,30 @@ const Login: React.FC = () => {
     };
 
     return (
-        <form onSubmit={handleLogin}>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
-            <button type="submit">Login</button>
-        </form>
+        <div className="container">
+            <div className="card">
+                <h2>Login</h2>
+                <form onSubmit={handleLogin}>
+                    <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Email"
+                        required
+                        className="input"
+                    />
+                    <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Password"
+                        required
+                        className="input"
+                    />
+                    <button type="submit" className="button-login">Login</button>
+                </form>
+            </div>
+        </div>
     );
 };
 
