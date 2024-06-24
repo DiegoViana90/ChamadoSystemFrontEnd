@@ -57,6 +57,7 @@ input,
 
 .button-login:hover {
     background-color: #00b336;
+    color: #ffffff;
 }
 
 .login-logo {

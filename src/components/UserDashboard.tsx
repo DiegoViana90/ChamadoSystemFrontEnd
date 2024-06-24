@@ -13,6 +13,7 @@ const UserDashboard: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [canCreateTicket, setCanCreateTicket] = useState(true);
     const [showEmptyFieldsAlert, setShowEmptyFieldsAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
 
     useEffect(() => {
         const fetchUserData = () => {
@@ -50,9 +51,11 @@ const UserDashboard: React.FC = () => {
         setLoading(true);
 
         try {
-            await api.post('/tickets', { title, description, userId: user.id });
+            const response = await api.post('/tickets', { title, description, userId: user.id });
+            console.log(response);
             setTitle('');
             setDescription('');
+            setAlertMessage(response.data);
             setShowAlert(true);
             setCanCreateTicket(false);
         } catch (error) {
@@ -146,7 +149,7 @@ const UserDashboard: React.FC = () => {
                                     {ticket.description.length > 100
                                         ? (
                                             <>
-                                                {`${ticket.description.substring(0, 60)}...`}
+                                                {`${ticket.description.substring(0, 80)}...`}
                                                 <div className="description-tooltip">
                                                     {ticket.description}
                                                 </div>
@@ -176,7 +179,7 @@ const UserDashboard: React.FC = () => {
             {showAlert && (
                 <div className="popup">
                     <div className="popup-content">
-                        <p>Chamado criado com sucesso!</p>
+                        <p>{alertMessage}</p>
                         <button onClick={closeAlert}>OK</button>
                     </div>
                 </div>
