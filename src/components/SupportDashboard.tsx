@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import api from '../services/api';
 import './styles.css';
 
@@ -10,11 +11,13 @@ const SupportDashboard: React.FC = () => {
     const [showAlert, setShowAlert] = useState(false);
     const [canCreateTicket, setCanCreateTicket] = useState(true);
     const [alertMessage, setAlertMessage] = useState('');
+    const [userRole, setUserRole] = useState<string>(''); 
 
     useEffect(() => {
         const fetchUserData = () => {
             const user = JSON.parse(localStorage.getItem('user')!);
             setUserName(user.name);
+            setUserRole(user.role); 
         };
 
         fetchUserData();
@@ -105,6 +108,10 @@ const SupportDashboard: React.FC = () => {
             console.error('Erro ao atualizar o status do ticket:', error);
         }
     };
+
+    if (userRole !== 'support') {
+        return <Navigate to="/login" />;
+    }
 
     return (
         <div className="container">
