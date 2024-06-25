@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { login } from '../services/auth';
 import './styles.css';
 
 import logoImage from '../images/logo.jpg';
@@ -14,29 +15,26 @@ const Login: React.FC = () => {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        setLoading(true);
+        try {
+            setLoading(true);
 
-        setTimeout(async () => {
-            try {
-                const response = await api.post('/auth/login', { email, password });
-                console.log(response);
-                const { token, user } = response.data;
+            const response = await api.post('/auth/login', { email, password });
+            console.log(response);
+            const { token, user } = response.data;
 
-                localStorage.setItem('token', token);
-                localStorage.setItem('user', JSON.stringify(user));
+            login(token, user);
 
-                if (user.role === 'user') {
-                    navigate('/user-dashboard');
-                } else if (user.role === 'support') {
-                    navigate('/support-dashboard');
-                }
-            } catch (error) {
-                console.error('Login falhou:', error);
-                alert('Login Falhou, Verifique suas credenciais.');
-            } finally {
-                setLoading(false);
+            if (user.role === 'user') {
+                navigate('/user-dashboard');
+            } else if (user.role === 'support') {
+                navigate('/support-dashboard');
             }
-        }, 500); // Adiciona um delay de 0.5 segundos
+        } catch (error) {
+            console.error('Login falhou:', error);
+            alert('Login Falhou, Verifique suas credenciais.');
+        } finally {
+            setLoading(false); 
+        }
     };
 
     return (
