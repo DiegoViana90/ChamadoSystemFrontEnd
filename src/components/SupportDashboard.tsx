@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
-import './styles.css'; 
+import './styles.css';
 
-const  SupportDashboard: React.FC = () => {
-    const [tickets, setTickets] = useState([]);
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
+const SupportDashboard: React.FC = () => {
+    const [tickets, setTickets] = useState<any[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [ticketsPerPage] = useState(10);
     const [userName, setUserName] = useState('');
     const [showAlert, setShowAlert] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [canCreateTicket, setCanCreateTicket] = useState(true);
-    const [showEmptyFieldsAlert, setShowEmptyFieldsAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
 
     useEffect(() => {
         const fetchUserData = () => {
@@ -25,38 +22,47 @@ const  SupportDashboard: React.FC = () => {
 
     useEffect(() => {
         const fetchTickets = async () => {
+            try {
+                const user = JSON.parse(localStorage.getItem('user')!);
+                const response = await api.get('/tickets', {
+                    params: {
+                        userId: user.id,
+                        _sort: 'id',
+                        _order: 'desc'
+                    }
+                });
+                const reversedTickets = response.data.reverse().map((ticket: any) => ({
+                    ...ticket,
+                    status: ticket.isClosed ? 'Fechado' : 'Aberto'
+                }));
+                setTickets(reversedTickets);
+            } catch (error) {
+                console.error('Erro ao buscar os tickets:', error);
+            }
+        };
+
+        fetchTickets();
+    }, [showAlert]);
+
+    const closeAlert = async () => {
+        setShowAlert(false);
+        try {
             const user = JSON.parse(localStorage.getItem('user')!);
-            const response = await api.get(`/tickets`, {
+            const response = await api.get('/tickets', {
                 params: {
                     userId: user.id,
                     _sort: 'id',
                     _order: 'desc'
                 }
             });
-            setTickets(response.data.reverse()); 
-        };
-
-        fetchTickets();
-    }, [tickets.length]);
-
-    const closeAlert = async () => {
-        setShowAlert(false);
-
-        const user = JSON.parse(localStorage.getItem('user')!);
-        const response = await api.get(`/tickets`, {
-            params: {
-                userId: user.id,
-                _sort: 'id',
-                _order: 'desc'
-            }
-        });
-        setTickets(response.data.reverse());
-        setCanCreateTicket(true);
-    };
-
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value.length <= 30) {
-            setTitle(e.target.value);
+            const reversedTickets = response.data.reverse().map((ticket: any) => ({
+                ...ticket,
+                status: ticket.isClosed ? 'Fechado' : 'Aberto'
+            }));
+            setTickets(reversedTickets);
+            setCanCreateTicket(true);
+        } catch (error) {
+            console.error('Erro ao fechar o alerta:', error);
         }
     };
 
@@ -66,10 +72,44 @@ const  SupportDashboard: React.FC = () => {
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+    const handleStatusChange = async (ticketId: number, newStatus: string) => {
+        try {
+            const user = JSON.parse(localStorage.getItem('user')!);
+            
+            const ticketDto = {
+                ticketId: ticketId,
+                userId: user.id,
+                isClosed: newStatus === 'Fechado', 
+                description: ''
+            };
+
+            const response = await api.put('/tickets', ticketDto);
+            const updatedTicketMessage = response.data;
+
+            const fetchResponse = await api.get('/tickets', {
+                params: {
+                    userId: user.id,
+                    _sort: 'id',
+                    _order: 'desc'
+                }
+            });
+            const reversedTickets = fetchResponse.data.reverse().map((ticket: any) => ({
+                ...ticket,
+                status: ticket.isClosed ? 'Fechado' : 'Aberto'
+            }));
+            setTickets(reversedTickets);
+
+            setAlertMessage(updatedTicketMessage);
+            setShowAlert(true);
+        } catch (error) {
+            console.error('Erro ao atualizar o status do ticket:', error);
+        }
+    };
+
     return (
         <div className="container">
             <div className="user-dashboard">
-                <h2 className="dashboard-title">AREA DO SUPORTE - {userName}</h2>
+                <h2 className="dashboard-title">ÁREA DO SUPORTE - {userName}</h2>
 
                 <h3 className="tickets-title">Chamados</h3>
                 <table className="table">
@@ -106,7 +146,15 @@ const  SupportDashboard: React.FC = () => {
                                     }
                                 </td>
                                 <td>{new Date(ticket.createdAt).toLocaleDateString()}</td>
-                                <td>{ticket.isClosed ? 'Fechado' : 'Aberto'}</td>
+                                <td>
+                                    <select
+                                        value={ticket.isClosed ? 'Fechado' : 'Aberto'}
+                                        onChange={(e) => handleStatusChange(ticket.id, e.target.value)}
+                                    >
+                                        <option value="Aberto">Aberto</option>
+                                        <option value="Fechado">Fechado</option>
+                                    </select>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
@@ -126,7 +174,7 @@ const  SupportDashboard: React.FC = () => {
             {showAlert && (
                 <div className="popup">
                     <div className="popup-content">
-                        <p>Chamado criado com sucesso!</p>
+                        <p>{alertMessage}</p>
                         <button onClick={closeAlert}>OK</button>
                     </div>
                 </div>
