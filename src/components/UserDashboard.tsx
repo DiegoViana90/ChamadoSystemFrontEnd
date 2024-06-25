@@ -49,21 +49,24 @@ const UserDashboard: React.FC = () => {
         }
 
         setLoading(true);
+        setShowEmptyFieldsAlert(false);
 
-        try {
-            const response = await api.post('/tickets', { title, description, userId: user.id });
-            console.log(response);
-            setTitle('');
-            setDescription('');
-            setAlertMessage(response.data);
-            setShowAlert(true);
-            setCanCreateTicket(false);
-        } catch (error) {
-            console.error('Erro ao criar chamado:', error);
-            alert('Erro ao criar chamado. Verifique os campos e tente novamente.');
-        } finally {
-            setLoading(false);
-        }
+        setTimeout(async () => {
+            try {
+                const response = await api.post('/tickets', { title, description, userId: user.id });
+                console.log(response);
+                setTitle('');
+                setDescription('');
+                setAlertMessage(response.data);
+                setShowAlert(true);
+                setCanCreateTicket(false);
+            } catch (error) {
+                console.error('Erro ao criar chamado:', error);
+                alert('Erro ao criar chamado. Verifique os campos e tente novamente.');
+            } finally {
+                setLoading(false);
+            }
+        }, 2000); 
     };
 
     const closeAlert = async () => {

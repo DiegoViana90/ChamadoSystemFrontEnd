@@ -14,27 +14,29 @@ const Login: React.FC = () => {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        try {
-            setLoading(true);
+        setLoading(true);
 
-            const response = await api.post('/auth/login', { email, password });
-            console.log(response);
-            const { token, user } = response.data;
+        setTimeout(async () => {
+            try {
+                const response = await api.post('/auth/login', { email, password });
+                console.log(response);
+                const { token, user } = response.data;
 
-            localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(user));
+                localStorage.setItem('token', token);
+                localStorage.setItem('user', JSON.stringify(user));
 
-            if (user.role === 'user') {
-                navigate('/user-dashboard');
-            } else if (user.role === 'support') {
-                navigate('/support-dashboard');
+                if (user.role === 'user') {
+                    navigate('/user-dashboard');
+                } else if (user.role === 'support') {
+                    navigate('/support-dashboard');
+                }
+            } catch (error) {
+                console.error('Login falhou:', error);
+                alert('Login Falhou, Verifique suas credenciais.');
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            console.error('Login falhou:', error);
-            alert('Login Falhou, Verifique suas credenciais.');
-        } finally {
-            setLoading(false); 
-        }
+        }, 500); // Adiciona um delay de 0.5 segundos
     };
 
     return (
