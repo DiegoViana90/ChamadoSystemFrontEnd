@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import { login } from '../services/auth';
-import './styles.css'; // Importa o arquivo de estilos aqui
+import './styles.css';
 
 import logoImage from '../images/logo.jpg';
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false); 
     const navigate = useNavigate();
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -19,10 +18,10 @@ const Login: React.FC = () => {
             setLoading(true);
 
             const response = await api.post('/auth/login', { email, password });
-            console.log(response);
             const { token, user } = response.data;
 
-            login(token, user);
+            localStorage.setItem('token', token);
+            localStorage.setItem('user', JSON.stringify(user));
 
             if (user.role === 'user') {
                 navigate('/user-dashboard');
@@ -33,16 +32,14 @@ const Login: React.FC = () => {
             console.error('Login falhou:', error);
             alert('Login Falhou, Verifique suas credenciais.');
         } finally {
-            setLoading(false);
+            setLoading(false); 
         }
     };
 
     return (
-        <div className="container-login">
-            <div className="logo-container">
-                <img src={logoImage} alt="Logo" className="login-logo" />
-            </div>
-            <div className="card-login">
+        <div className="container">
+            <img src={logoImage} alt="Logo" className="login-logo" />
+            <div className="card">
                 <h2>Login Suporte</h2>
                 <form onSubmit={handleLogin}>
                     <input

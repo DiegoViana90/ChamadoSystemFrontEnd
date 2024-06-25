@@ -31,12 +31,11 @@ const SupportDashboard: React.FC = () => {
                         _order: 'desc'
                     }
                 });
-                const updatedTickets = response.data.map((ticket: any) => ({
+                const reversedTickets = response.data.reverse().map((ticket: any) => ({
                     ...ticket,
                     status: ticket.isClosed ? 'Fechado' : 'Aberto'
                 }));
-                const sortedTickets = sortTickets(updatedTickets);
-                setTickets(sortedTickets);
+                setTickets(reversedTickets);
             } catch (error) {
                 console.error('Erro ao buscar os tickets:', error);
             }
@@ -44,12 +43,6 @@ const SupportDashboard: React.FC = () => {
 
         fetchTickets();
     }, [showAlert]);
-
-    const sortTickets = (tickets: any[]) => {
-        const openTickets = tickets.filter(ticket => !ticket.isClosed);
-        const closedTickets = tickets.filter(ticket => ticket.isClosed);
-        return [...openTickets, ...closedTickets];
-    };
 
     const closeAlert = async () => {
         setShowAlert(false);
@@ -62,12 +55,11 @@ const SupportDashboard: React.FC = () => {
                     _order: 'desc'
                 }
             });
-            const updatedTickets = response.data.map((ticket: any) => ({
+            const reversedTickets = response.data.reverse().map((ticket: any) => ({
                 ...ticket,
                 status: ticket.isClosed ? 'Fechado' : 'Aberto'
             }));
-            const sortedTickets = sortTickets(updatedTickets);
-            setTickets(sortedTickets);
+            setTickets(reversedTickets);
             setCanCreateTicket(true);
         } catch (error) {
             console.error('Erro ao fechar o alerta:', error);
@@ -101,12 +93,11 @@ const SupportDashboard: React.FC = () => {
                     _order: 'desc'
                 }
             });
-            const updatedTickets = fetchResponse.data.map((ticket: any) => ({
+            const reversedTickets = fetchResponse.data.reverse().map((ticket: any) => ({
                 ...ticket,
                 status: ticket.isClosed ? 'Fechado' : 'Aberto'
             }));
-            const sortedTickets = sortTickets(updatedTickets);
-            setTickets(sortedTickets);
+            setTickets(reversedTickets);
 
             setAlertMessage(updatedTicketMessage);
             setShowAlert(true);
