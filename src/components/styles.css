@@ -1,7 +1,6 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    height: 100vh; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,6 +16,7 @@ body {
     padding: 20px; 
     border-radius: 10px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    margin-top: 50px; /* Ajuste conforme necessário para evitar que fique muito próximo ao topo */
 }
 
 .card {
@@ -24,8 +24,8 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
+    width: 100%; /* Utilize 100% ou ajuste conforme necessário */
+    max-width: 1200px; /* Ajuste o valor máximo conforme necessário para evitar o zoom excessivo */
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -258,4 +258,71 @@ input,
     color: #ff0101; 
     margin-top: 10px;
     font-weight: bold;
+}
+
+.container-login {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #020212;
+    height: 100vh; /* Ocupa toda a altura da tela */
+}
+
+.logo-container {
+    margin-bottom: 20px;
+}
+
+.card-login {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 150%;
+    max-width: 500px; /* Ajusta o valor máximo conforme necessário */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.card-login h2 {
+    color: #000000;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.card-login form {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-login .input {
+    width: 150%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #000000;
+    box-sizing: border-box;
+}
+
+
+.card-login .button-login {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: none;
+    background-color: #a1a136;
+    color: #020212;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.card-login .button-login:hover {
+    background-color: #00b336;
+    color: #ffffff;
 }

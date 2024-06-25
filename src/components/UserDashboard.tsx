@@ -97,7 +97,7 @@ const UserDashboard: React.FC = () => {
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
     return (
-        <div className="container">
+        <div className="container-userdashboard">
             <div className="user-dashboard">
                 <h2 className="dashboard-title">Chamados de {userName}</h2>
                 <div className="input-container">
@@ -124,11 +124,11 @@ const UserDashboard: React.FC = () => {
                 >
                     {loading ? 'Criando...' : 'Criar NOVO Chamado'}
                 </button>
-
+    
                 {showEmptyFieldsAlert && (
                     <p className="empty-fields-alert">Por favor, preencha os campos de título e descrição.</p>
                 )}
-
+    
                 <h3 className="tickets-title">Seus Chamados</h3>
                 <table className="table">
                     <thead>
@@ -167,7 +167,7 @@ const UserDashboard: React.FC = () => {
                         ))}
                     </tbody>
                 </table>
-
+    
                 <ul className="pagination">
                     {Array.from({ length: Math.ceil(tickets.length / ticketsPerPage) }, (_, index) => (
                         <li key={index} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
@@ -178,7 +178,7 @@ const UserDashboard: React.FC = () => {
                     ))}
                 </ul>
             </div>
-
+    
             {showAlert && (
                 <div className="popup">
                     <div className="popup-content">
