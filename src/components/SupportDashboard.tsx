@@ -4,15 +4,11 @@ import './styles.css';
 
 const  SupportDashboard: React.FC = () => {
     const [tickets, setTickets] = useState([]);
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [ticketsPerPage] = useState(10);
     const [userName, setUserName] = useState('');
     const [showAlert, setShowAlert] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [canCreateTicket, setCanCreateTicket] = useState(true);
-    const [showEmptyFieldsAlert, setShowEmptyFieldsAlert] = useState(false);
+    const [, setCanCreateTicket] = useState(true);
 
     useEffect(() => {
         const fetchUserData = () => {
@@ -52,12 +48,6 @@ const  SupportDashboard: React.FC = () => {
         });
         setTickets(response.data.reverse());
         setCanCreateTicket(true);
-    };
-
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value.length <= 30) {
-            setTitle(e.target.value);
-        }
     };
 
     const indexOfLastTicket = currentPage * ticketsPerPage;
