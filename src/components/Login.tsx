@@ -23,7 +23,9 @@ const Login: React.FC = () => {
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
 
-            if (user.role === 'user') {
+            if (user.isFirstAccess) {
+                navigate('/change-password');
+            } else if (user.role === 'user') {
                 navigate('/user-dashboard');
             } else if (user.role === 'support') {
                 navigate('/support-dashboard');
