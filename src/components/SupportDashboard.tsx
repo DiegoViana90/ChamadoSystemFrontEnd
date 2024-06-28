@@ -10,6 +10,7 @@ const SupportDashboard: React.FC = () => {
     const [showAlert, setShowAlert] = useState(false);
     const [canCreateTicket, setCanCreateTicket] = useState(true);
     const [alertMessage, setAlertMessage] = useState('');
+    const [counter, setCounter] = useState(60);
 
     useEffect(() => {
         const fetchUserData = () => {
@@ -20,30 +21,44 @@ const SupportDashboard: React.FC = () => {
         fetchUserData();
     }, []);
 
-    useEffect(() => {
-        const fetchTickets = async () => {
-            try {
-                const user = JSON.parse(localStorage.getItem('user')!);
-                const response = await api.get('/tickets', {
-                    params: {
-                        userId: user.id,
-                        _sort: 'id',
-                        _order: 'desc'
-                    }
-                });
-                const updatedTickets = response.data.map((ticket: any) => ({
-                    ...ticket,
-                    status: ticket.isClosed ? 'Fechado' : 'Aberto'
-                }));
-                const sortedTickets = sortTickets(updatedTickets);
-                setTickets(sortedTickets);
-            } catch (error) {
-                console.error('Erro ao buscar os tickets:', error);
-            }
-        };
+    const fetchTickets = async () => {
+        try {
+            const user = JSON.parse(localStorage.getItem('user')!);
+            const response = await api.get('/tickets', {
+                params: {
+                    userId: user.id,
+                    _sort: 'id',
+                    _order: 'desc'
+                }
+            });
+            const updatedTickets = response.data.map((ticket: any) => ({
+                ...ticket,
+                status: ticket.isClosed ? 'Fechado' : 'Aberto'
+            }));
+            const sortedTickets = sortTickets(updatedTickets);
+            setTickets(sortedTickets);
+        } catch (error) {
+            console.error('Erro ao buscar os tickets:', error);
+        }
+    };
 
+    useEffect(() => {
         fetchTickets();
     }, [showAlert]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCounter((prevCounter) => {
+                if (prevCounter === 1) {
+                    fetchTickets();
+                    return 60;
+                }
+                return prevCounter - 1;
+            });
+        }, 1000); // 1000 ms = 1 segundo
+
+        return () => clearInterval(interval);
+    }, []);
 
     const sortTickets = (tickets: any[]) => {
         const openTickets = tickets.filter(ticket => !ticket.isClosed);
@@ -115,11 +130,11 @@ const SupportDashboard: React.FC = () => {
             console.error('Erro ao atualizar o status do ticket:', error);
         }
     };
-    
 
     return (
         <div className="container">
             <div className="user-dashboard">
+                <div className="counter">Atualizando em: {counter}s</div>
                 <h2 className="dashboard-title">ÁREA DO SUPORTE - {userName}</h2>
 
                 <h3 className="tickets-title">Chamados</h3>
