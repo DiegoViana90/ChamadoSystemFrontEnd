@@ -80,7 +80,7 @@ const SupportDashboard: React.FC = () => {
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-    const handleStatusChange = async (ticketId: number, newStatus: string) => {
+    const handleStatusChange = async (ticketId: number, newStatus: string, description: string) => {
         try {
             const user = JSON.parse(localStorage.getItem('user')!);
             
@@ -88,12 +88,12 @@ const SupportDashboard: React.FC = () => {
                 ticketId: ticketId,
                 userId: user.id,
                 isClosed: newStatus === 'Fechado', 
-                description: ''
+                description: description
             };
-
+    
             const response = await api.put('/tickets', ticketDto);
             const updatedTicketMessage = response.data;
-
+    
             const fetchResponse = await api.get('/tickets', {
                 params: {
                     userId: user.id,
@@ -101,19 +101,21 @@ const SupportDashboard: React.FC = () => {
                     _order: 'desc'
                 }
             });
+
             const updatedTickets = fetchResponse.data.map((ticket: any) => ({
                 ...ticket,
                 status: ticket.isClosed ? 'Fechado' : 'Aberto'
             }));
             const sortedTickets = sortTickets(updatedTickets);
             setTickets(sortedTickets);
-
+    
             setAlertMessage(updatedTicketMessage);
             setShowAlert(true);
         } catch (error) {
             console.error('Erro ao atualizar o status do ticket:', error);
         }
     };
+    
 
     return (
         <div className="container">
@@ -158,7 +160,7 @@ const SupportDashboard: React.FC = () => {
                                 <td>
                                     <select
                                         value={ticket.isClosed ? 'Fechado' : 'Aberto'}
-                                        onChange={(e) => handleStatusChange(ticket.id, e.target.value)}
+                                        onChange={(e) => handleStatusChange(ticket.id, e.target.value, ticket.description)}
                                     >
                                         <option value="Aberto">Aberto</option>
                                         <option value="Fechado">Fechado</option>
