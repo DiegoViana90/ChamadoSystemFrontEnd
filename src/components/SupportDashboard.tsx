@@ -208,7 +208,7 @@ const SupportDashboard: React.FC = () => {
                                         <option value={Status.Closed}>Fechado</option>
                                         <option value={Status.Analysis}>Análise</option>
                                         <option value={Status.AwaitingAuthorization}>Aguardando Autorização</option>
-                                        <option value={Status.awaitingOrder}>Aguardando Ordem</option>
+                                        <option value={Status.awaitingOrder}>Aguardando Pedido</option>
                                         <option value={Status.notAuthorized}>Não Autorizado</option>
                                     </select>
                                 </td>

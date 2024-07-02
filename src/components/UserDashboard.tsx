@@ -2,6 +2,15 @@ import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import './styles.css'; 
 
+enum Status {
+    Open = 0,
+    Closed = 1,
+    Analysis = 2,
+    AwaitingAuthorization = 3,
+    AwaitingOrder = 4,
+    NotAuthorized = 5
+}
+
 const UserDashboard: React.FC = () => {
     const [tickets, setTickets] = useState([]);
     const [title, setTitle] = useState('');
@@ -96,6 +105,40 @@ const UserDashboard: React.FC = () => {
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+    const getStatusClassName = (status: number) => {
+        switch (status) {
+            case Status.Closed:
+                return 'closed-ticket';
+            case Status.Analysis:
+                return 'analysis-ticket';
+            case Status.AwaitingAuthorization:
+                return 'awaiting-authorization-ticket';
+            case Status.AwaitingOrder:
+                return 'awaiting-order-ticket';
+            case Status.NotAuthorized:
+                return 'not-authorized-ticket';
+            default:
+                return 'open-ticket';
+        }
+    };
+
+    const getStatusText = (status: number) => {
+        switch (status) {
+            case Status.Closed:
+                return 'Fechado';
+            case Status.Analysis:
+                return 'Análise';
+            case Status.AwaitingAuthorization:
+                return 'Aguardando Autorização';
+            case Status.AwaitingOrder:
+                return 'Aguardando Pedido';
+            case Status.NotAuthorized:
+                return 'Não Autorizado';
+            default:
+                return 'Aberto';
+        }
+    };
+
     return (
         <div className="container">
             <div className="user-dashboard">
@@ -144,7 +187,7 @@ const UserDashboard: React.FC = () => {
                         {currentTickets.map((ticket: any) => (
                             <tr
                                 key={ticket.id}
-                                className={ticket.isClosed ? 'closed-ticket' : 'open-ticket'}
+                                className={getStatusClassName(ticket.status)}
                             >
                                 <td className="ticket-id-cell">{ticket.id}</td>
                                 <td>{ticket.title}</td>
@@ -162,7 +205,7 @@ const UserDashboard: React.FC = () => {
                                     }
                                 </td>
                                 <td>{new Date(ticket.createdAt).toLocaleDateString()}</td>
-                                <td>{ticket.isClosed ? 'Fechado' : 'Aberto'}</td>
+                                <td>{getStatusText(ticket.status)}</td>
                             </tr>
                         ))}
                     </tbody>
