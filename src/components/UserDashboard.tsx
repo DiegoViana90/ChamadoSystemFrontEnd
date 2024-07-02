@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
-import './styles.css'; 
+import './styles.css';
 
 enum Status {
     Open = 0,
@@ -23,6 +23,7 @@ const UserDashboard: React.FC = () => {
     const [canCreateTicket, setCanCreateTicket] = useState(true);
     const [showEmptyFieldsAlert, setShowEmptyFieldsAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
+    const [canRefreshTickets, setCanRefreshTickets] = useState(true); // Novo estado para controlar o botão de atualizar
 
     useEffect(() => {
         const fetchUserData = () => {
@@ -43,7 +44,7 @@ const UserDashboard: React.FC = () => {
                     _order: 'desc'
                 }
             });
-            setTickets(response.data.reverse()); 
+            setTickets(response.data.reverse());
         };
 
         fetchTickets();
@@ -66,7 +67,7 @@ const UserDashboard: React.FC = () => {
                 console.log(response);
                 setTitle('');
                 setDescription('');
-                setAlertMessage(response.data);
+                setAlertMessage('Chamado criado com sucesso!');
                 setShowAlert(true);
                 setCanCreateTicket(false);
             } catch (error) {
@@ -91,11 +92,33 @@ const UserDashboard: React.FC = () => {
         });
         setTickets(response.data.reverse());
         setCanCreateTicket(true);
+        setCanRefreshTickets(true); // Reativa o botão de atualizar
     };
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.value.length <= 30) {
             setTitle(e.target.value);
+        }
+    };
+
+    const handleRefreshTickets = async () => {
+        const user = JSON.parse(localStorage.getItem('user')!);
+        setCanRefreshTickets(false); // Desativa o botão de atualizar
+        try {
+            const response = await api.get(`/tickets`, {
+                params: {
+                    userId: user.id,
+                    _sort: 'id',
+                    _order: 'desc'
+                }
+            });
+            setTickets(response.data.reverse());
+            setAlertMessage('Chamados atualizados com sucesso!');
+            setShowAlert(true);
+        } catch (error) {
+            console.error('Erro ao atualizar chamados:', error);
+            alert('Erro ao atualizar chamados. Tente novamente.');
+            setCanRefreshTickets(true); // Reativa o botão de atualizar em caso de erro
         }
     };
 
@@ -220,6 +243,16 @@ const UserDashboard: React.FC = () => {
                         </li>
                     ))}
                 </ul>
+
+                <div className="update-button-container">
+                    <button
+                        onClick={handleRefreshTickets}
+                        className="button-refresh"
+                        disabled={!canRefreshTickets} // Desabilita o botão enquanto a mensagem de sucesso estiver visível
+                    >
+                        Atualizar Chamados
+                    </button>
+                </div>
             </div>
 
             {showAlert && (
