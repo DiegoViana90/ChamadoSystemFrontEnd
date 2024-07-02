@@ -2,6 +2,15 @@ import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import './styles.css';
 
+enum Status {
+    Open = 0,
+    Closed = 1,
+    Analysis = 2,
+    AwaitingAuthorization = 3,
+    awaitingOrder = 4,
+    notAuthorized = 5
+}
+
 const SupportDashboard: React.FC = () => {
     const [tickets, setTickets] = useState<any[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -33,7 +42,7 @@ const SupportDashboard: React.FC = () => {
             });
             const updatedTickets = response.data.map((ticket: any) => ({
                 ...ticket,
-                status: ticket.isClosed ? 'Fechado' : 'Aberto'
+                status: ticket.status // Assuming the backend returns the status field mapped correctly
             }));
             const sortedTickets = sortTickets(updatedTickets);
             setTickets(sortedTickets);
@@ -61,9 +70,21 @@ const SupportDashboard: React.FC = () => {
     }, []);
 
     const sortTickets = (tickets: any[]) => {
-        const openTickets = tickets.filter(ticket => !ticket.isClosed);
-        const closedTickets = tickets.filter(ticket => ticket.isClosed);
-        return [...openTickets, ...closedTickets];
+        const openTickets = tickets.filter(ticket => ticket.status === Status.Open);
+        const closedTickets = tickets.filter(ticket => ticket.status === Status.Closed);
+        const analysisTickets = tickets.filter(ticket => ticket.status === Status.Analysis);
+        const awaitingAuthorizationTickets = tickets.filter(ticket => ticket.status === Status.AwaitingAuthorization);
+        const awaitingOrderTickets = tickets.filter(ticket => ticket.status === Status.awaitingOrder);
+        const notAuthorizedTickets = tickets.filter(ticket => ticket.status === Status.notAuthorized);
+        
+        return [
+            ...openTickets,
+            ...closedTickets,
+            ...analysisTickets,
+            ...awaitingAuthorizationTickets,
+            ...awaitingOrderTickets,
+            ...notAuthorizedTickets
+        ];
     };
 
     const closeAlert = async () => {
@@ -79,7 +100,7 @@ const SupportDashboard: React.FC = () => {
             });
             const updatedTickets = response.data.map((ticket: any) => ({
                 ...ticket,
-                status: ticket.isClosed ? 'Fechado' : 'Aberto'
+                status: ticket.status // Assuming the backend returns the status field mapped correctly
             }));
             const sortedTickets = sortTickets(updatedTickets);
             setTickets(sortedTickets);
@@ -95,18 +116,24 @@ const SupportDashboard: React.FC = () => {
 
     const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-    const handleStatusChange = async (ticketId: number, newStatus: string, description: string) => {
+    const handleStatusChange = async (ticketId: number, newStatus: Status, description: string) => {
         try {
             const user = JSON.parse(localStorage.getItem('user')!);
+            const ticket = tickets.find(t => t.id === ticketId);
+            
+            if (!ticket) {
+                console.error(`Ticket ${ticketId} não encontrado.`);
+                return;
+            }
             
             const ticketDto = {
                 ticketId: ticketId,
-                userId: user.id,
-                isClosed: newStatus === 'Fechado', 
+                userId: ticket.userId,
+                status: newStatus, 
                 description: description
             };
     
-            const response = await api.put('/tickets', ticketDto);
+            const response = await api.put(`/tickets/`, ticketDto);
             const updatedTicketMessage = response.data;
     
             const fetchResponse = await api.get('/tickets', {
@@ -119,7 +146,7 @@ const SupportDashboard: React.FC = () => {
 
             const updatedTickets = fetchResponse.data.map((ticket: any) => ({
                 ...ticket,
-                status: ticket.isClosed ? 'Fechado' : 'Aberto'
+                status: ticket.status // Assuming the backend returns the status field mapped correctly
             }));
             const sortedTickets = sortTickets(updatedTickets);
             setTickets(sortedTickets);
@@ -145,7 +172,7 @@ const SupportDashboard: React.FC = () => {
                             <th>Nome Usuário</th>
                             <th>Título</th>
                             <th>Descrição</th>
-                            <th>Dia da Criação</th>
+                            <th>Data de Criação</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -153,7 +180,7 @@ const SupportDashboard: React.FC = () => {
                         {currentTickets.map((ticket: any) => (
                             <tr
                                 key={ticket.id}
-                                className={ticket.isClosed ? 'closed-ticket' : 'open-ticket'}
+                                className={getStatusClassName(ticket.status)}
                             >
                                 <td className="ticket-id-cell">{ticket.id}</td>
                                 <td>{ticket.user.name}</td>
@@ -174,11 +201,15 @@ const SupportDashboard: React.FC = () => {
                                 <td>{new Date(ticket.createdAt).toLocaleDateString()}</td>
                                 <td>
                                     <select
-                                        value={ticket.isClosed ? 'Fechado' : 'Aberto'}
-                                        onChange={(e) => handleStatusChange(ticket.id, e.target.value, ticket.description)}
+                                        value={ticket.status}
+                                        onChange={(e) => handleStatusChange(ticket.id, Number(e.target.value), ticket.description)}
                                     >
-                                        <option value="Aberto">Aberto</option>
-                                        <option value="Fechado">Fechado</option>
+                                        <option value={Status.Open}>Aberto</option>
+                                        <option value={Status.Closed}>Fechado</option>
+                                        <option value={Status.Analysis}>Análise</option>
+                                        <option value={Status.AwaitingAuthorization}>Aguardando Autorização</option>
+                                        <option value={Status.awaitingOrder}>Aguardando Ordem</option>
+                                        <option value={Status.notAuthorized}>Não Autorizado</option>
                                     </select>
                                 </td>
                             </tr>
@@ -209,4 +240,24 @@ const SupportDashboard: React.FC = () => {
     );
 };
 
+const getStatusClassName = (status: Status) => {
+    switch (status) {
+        case Status.Open:
+            return 'open-ticket';
+        case Status.Closed:
+            return 'closed-ticket';
+        case Status.Analysis:
+            return 'analysis-ticket';
+        case Status.AwaitingAuthorization:
+            return 'awaiting-authorization-ticket';
+        case Status.awaitingOrder:
+            return 'awaiting-order-ticket';
+        case Status.notAuthorized:
+            return 'not-authorized-ticket';
+        default:
+            return '';
+    }
+};
+
 export default SupportDashboard;
+
